@@ -5,7 +5,7 @@
 sudo yum install python3 ansible
 ```
 
-2. Создать DNS запись или запись в hosts на используемых устройствах
+2. Создание DNS записи при помощи dyn-dns
 
 # Certs path
 
