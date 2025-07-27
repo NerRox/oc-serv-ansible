@@ -5,7 +5,7 @@
 sudo yum install python3 ansible
 ```
 
-2. Создание DNS записи при помощи dyn-dns
+2. Создание DNS записи при помощи dyn-dns no-ip
 
 # Certs path
 
@@ -16,6 +16,7 @@ server-key = /etc/letsencrypt/live/{{ ocservDNSName }}/privkey.pem
 
 # Extra vars
 ocserv_dns_name
+community.general
 
 # Collections 
 ansible.posix

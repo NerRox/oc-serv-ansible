@@ -1,6 +1,7 @@
 - name: Play for installing and configuring the ocserv CentOS8+
   hosts: localhost
   become: true
+  gather_facts: true
   
   tasks:
   - name: Install required packages
@@ -60,6 +61,13 @@
   - name: Auth to dyn-dns provider
     ansible.builin.shell: >
       podman run ghcr.io/noipcom/noip-duc:latest  -g all.ddnskey.com --username {{ dynDNSuser }} --password {{ dynDNSpwd }}
+  
+  - name: Wait for DNS 
+    ansible.builin.debug:
+      msg: waiting for A record
+    until: lookup('community.general.dig', ocservDNSName) == {{ ansible_default_ipv4.address }}
+    retries: 60
+    delay: 10
 
   - name: Enable and activate firewalld
     ansible.builtin.systemd_service:
@@ -101,7 +109,7 @@
     ansible.builtin.shell: >
       /usr/bin/certbot certonly --standalone --domains {{ ocservDNSName }} --non-interactive
     register: _issue_res
-    changed_when: "'not yet due for renewal' in _issue_res"
+    changed_when: "'not yet due for renewal' or 'Successfully received certificate' in _issue_res"
 
   - name: Template ocserv.conf
     ansible.builtin.template:
