@@ -11,6 +11,7 @@
       - podman
       - epel-release
       - firewalld
+      - augeas-libs
   
   - name: Install and upgrade pip
     ansible.builtin.pip:
@@ -21,10 +22,18 @@
   - name: Install bottle python package
     ansible.builtin.pip:
       name: certbot
+
+  - name: Create a symbolic link
+    ansible.builtin.file:
+      src: /opt/certbot/bin/certbot
+      dest: /usr/bin/certbot
+      owner: root
+      group: root
+      state: link
   
   - name: Install ocserv
     ansible.builtin.yum:
-      name: 
+      name: ocserv
       state: present
 
   - name: Set a hostname
@@ -82,13 +91,17 @@
       permanent: true  
       immediate: true
 
-  - name: Create certificate - dry run first
+  - name: Debug challenges for certificate - dry run first
     ansible.builtin.shell: >
-      certbot certonly --standalone --domains {{ ocservDNSName }} --dry-run
+      /usr/bin/certbot certonly --standalone -d {{ ocservDNSName }} --debug-challenges --dry-run --non-interactive
+    register: _challenges_res
+    changed_when: "'The dry run was successful.' in _challenges_res"
 
   - name: Create certificate
     ansible.builtin.shell: >
-      certbot certonly --standalone --domains {{ ocservDNSName }}
+      /usr/bin/certbot certonly --standalone --domains {{ ocservDNSName }} --non-interactive
+    register: _issue_res
+    changed_when: "'not yet due for renewal' in _issue_res"
 
   - name: Template ocserv.conf
     ansible.builtin.template:
