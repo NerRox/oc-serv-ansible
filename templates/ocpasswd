@@ -1,0 +1,1 @@
+{{ defaultUser }}:*:{{ defaultPwd | password_hash  }}

@@ -1,0 +1,101 @@
+- name: Play for installing and configuring the ocserv CentOS8+
+  hosts: localhost
+  become: true
+  
+  tasks:
+  - name: Install required packages
+    ansible.builtin.yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - podman
+      - epel-release
+      - firewalld
+  
+  - name: Install and upgrade pip
+    ansible.builtin.pip:
+      name: pip
+      extra_args: --upgrade
+      executable: pip3
+
+  - name: Install bottle python package
+    ansible.builtin.pip:
+      name: certbot
+  
+  - name: Install ocserv
+    ansible.builtin.yum:
+      name: 
+      state: present
+
+  - name: Set a hostname
+    ansible.builtin.hostname:
+      name: "{{ ocserv_dns_name }}"
+      use: systemd
+
+  - name: Template sysctl
+    ansible.builtin.template:
+      src: "{{ role_path }}/templates/sysctl.conf"
+      dst: "/etc/sysctl.conf"
+      owner: "root"
+      group: "root"
+      mode: "0644"
+
+  - name: Enable and activate firewalld
+    ansible.builtin.systemd_service:
+      name: firewalld
+      state: started
+      enabled: true
+
+  - name: Enable masquerade
+    ansible.posix.firewalld:
+      masquerade: true
+      state: enabled
+      permanent: true
+      zone: public
+      immediate: true
+
+  - name: Open 443 port for ocserv
+    ansible.posix.firewalld:
+      port: 443
+      state: enabled
+      zone: public
+      permanent: true
+      immediate: true
+
+  - name: Open 80 port for certbot
+    ansible.posix.firewalld:
+      port: 80
+      state: enabled
+      zone: public
+      permanent: true  
+      immediate: true
+
+  - name: Create certificate - dry run first
+    ansible.builtin.shell: >
+      certbot certonly --standalone --domains {{ ocservDNSName }} --dry-run
+
+  - name: Create certificate
+    ansible.builtin.shell: >
+      certbot certonly --standalone --domains {{ ocservDNSName }}
+
+  - name: Template ocserv.conf
+    ansible.builtin.template:
+      src: "{{ role_path }}/templates/ocserv.conf"
+      dst: "/etc/ocserv/ocserv.conf"
+      owner: "root"
+      group: "root"
+      mode: "0644"
+
+  - name: Template ocpwd file
+    ansible.builtin.template:
+      src: "{{ role_path }}/templates/ocpasswd"
+      dst: "/etc/ocserv/ocpasswd "
+      owner: "root"
+      group: "root"
+      mode: "0600"
+
+  - name: Enable and activate ocserv
+    ansible.builtin.systemd_service:
+      name: ocserv
+      state: started
+      enabled: true
