@@ -74,7 +74,7 @@
   - name: Wait for DNS 
     ansible.builtin.debug:
       msg: waiting for A record
-    until: lookup('community.general.dig', ocservDNSName) == {{ ansible_default_ipv4.address }}
+    until: lookup('community.general.dig', ocservDNSName)
     retries: 60
     delay: 10
 
