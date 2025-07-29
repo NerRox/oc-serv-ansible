@@ -21,9 +21,12 @@
       extra_args: --upgrade
       executable: pip3
 
-  - name: Install certbot python package
+  - name: Install python packages
     ansible.builtin.pip:
-      name: certbot
+      name: "{{ item }}"
+    with_items:
+      - certbot
+      - dnspython
   
   - name: Get certbot location
     ansible.builtin.shell: >
