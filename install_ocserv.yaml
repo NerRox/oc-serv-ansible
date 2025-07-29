@@ -97,7 +97,7 @@
 
   - name: Open 443 port for ocserv
     ansible.posix.firewalld:
-      port: 443
+      port: 443/tcp
       state: enabled
       zone: public
       permanent: true
@@ -105,7 +105,7 @@
 
   - name: Open 80 port for certbot
     ansible.posix.firewalld:
-      port: 80
+      port: 80/tcp
       state: enabled
       zone: public
       permanent: true  
