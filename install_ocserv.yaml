@@ -119,13 +119,13 @@
 
   - name: Create certificate
     ansible.builtin.shell: >
-      /usr/bin/certbot certonly --standalone --domains {{ ocservDNSName }} --non-interactive
+      /usr/bin/certbot certonly --standalone --domains {{ ocservDNSName }} --non-interactive --agree-tos
     register: _issue_res
     changed_when: "'not yet due for renewal' or 'Successfully received certificate' in _issue_res"
 
   - name: Template ocserv.conf
     ansible.builtin.template:
-      src: "{{ role_path }}/templates/ocserv.conf"
+      src: "{{ playbook_dir  }}/templates/ocserv.conf"
       dst: "/etc/ocserv/ocserv.conf"
       owner: "root"
       group: "root"
@@ -133,7 +133,7 @@
 
   - name: Template ocpwd file
     ansible.builtin.template:
-      src: "{{ role_path }}/templates/ocpasswd"
+      src: "{{ playbook_dir  }}/templates/ocpasswd"
       dst: "/etc/ocserv/ocpasswd "
       owner: "root"
       group: "root"
