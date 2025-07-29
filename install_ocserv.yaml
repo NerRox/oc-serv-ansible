@@ -45,7 +45,7 @@
 
   - name: Set a hostname
     ansible.builtin.hostname:
-      name: "{{ ocserv_dns_name }}"
+      name: "{{ ocservDNSName }}"
       use: systemd
 
   - name: Set sysctl port-forward
