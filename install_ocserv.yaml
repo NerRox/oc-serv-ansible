@@ -24,10 +24,15 @@
   - name: Install bottle python package
     ansible.builtin.pip:
       name: certbot
+  
+  - name: Get certbot location
+    ansible.buitin.shell: >
+      which certbot
+    register: certbot_location
 
   - name: Create a symbolic link
     ansible.builtin.file:
-      src: /opt/certbot/bin/certbot
+      src: "{{ certbot_location.stdout }}"
       dest: /usr/bin/certbot
       owner: root
       group: root
