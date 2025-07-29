@@ -21,12 +21,12 @@
       extra_args: --upgrade
       executable: pip3
 
-  - name: Install bottle python package
+  - name: Install certbot python package
     ansible.builtin.pip:
       name: certbot
   
   - name: Get certbot location
-    ansible.buitin.shell: >
+    ansible.builtin.shell: >
       which certbot
     register: certbot_location
 
