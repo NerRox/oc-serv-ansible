@@ -69,7 +69,7 @@
       name: "dyndns"
       recreate: true
       image: ghcr.io/noipcom/noip-duc:latest
-      command: -g all.ddnskey.com --username {{ dynDNSuser }} --password {{ dynDNSpwd }}
+      command: "-g all.ddnskey.com --username {{ dynDNSuser }} --password {{ dynDNSpwd }}"
   
   - name: Wait for DNS 
     ansible.builtin.debug:
