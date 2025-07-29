@@ -64,9 +64,12 @@
       state: present
       reload: true
 
-  - name: Auth to dyn-dns provider
-    ansible.builtin.shell: >
-      podman run -d ghcr.io/noipcom/noip-duc:latest  -g all.ddnskey.com --username {{ dynDNSuser }} --password {{ dynDNSpwd }}
+  - name: Start auth container for dyndns
+    containers.podman.podman_container:
+      name: "dyndns"
+      recreate: true
+      image: ghcr.io/noipcom/noip-duc:latest
+      command: -g all.ddnskey.com --username {{ dynDNSuser }} --password {{ dynDNSpwd }}
   
   - name: Wait for DNS 
     ansible.builtin.debug:

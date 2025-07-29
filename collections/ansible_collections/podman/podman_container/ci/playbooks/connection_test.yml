@@ -1,0 +1,27 @@
+---
+- hosts: "{{ host|default('all') }}"
+  gather_facts: true
+  vars:
+    repo_dir: "/home/{{ ansible_user }}/ansible-podman-collections"
+    distro: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+  tasks:
+
+    - name: Run test script for podman
+      become: "{{ distro == 'CentOS7' }}"
+      shell: >-
+        {% if ansible_venv is defined %}source {{ ansible_venv }}/bin/activate; {% endif %}
+
+        {{ repo_dir }}/ci/run_connection_test.sh podman {{ test_executable | default('podman') }}
+      args:
+        chdir: "{{ repo_dir }}"
+        executable: /bin/bash
+
+    - name: Run test script for buildah
+      become: "{{ distro == 'CentOS7' }}"
+      shell: >-
+        {% if ansible_venv is defined %}source {{ ansible_venv }}/bin/activate; {% endif %}
+
+        {{ repo_dir }}/ci/run_connection_test.sh buildah
+      args:
+        chdir: "{{ repo_dir }}"
+        executable: /bin/bash
