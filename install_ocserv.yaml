@@ -13,6 +13,7 @@
       - epel-release
       - firewalld
       - augeas-libs
+      - python-pip
   
   - name: Install and upgrade pip
     ansible.builtin.pip:
