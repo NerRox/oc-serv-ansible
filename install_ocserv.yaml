@@ -123,10 +123,19 @@
     register: _issue_res
     changed_when: "'not yet due for renewal' or 'Successfully received certificate' in _issue_res"
 
+  - name: Cron the cert renewal
+    ansible.builtin.cron:
+      name: "renew cert"
+      minite: "0"
+      hour: "0"
+      day: "1"
+      month: "*/2"
+      job: "certbot renew -q"
+
   - name: Template ocserv.conf
     ansible.builtin.template:
-      src: "{{ playbook_dir  }}/templates/ocserv.conf"
-      dst: "/etc/ocserv/ocserv.conf"
+      src: "{{ playbook_dir }}/templates/ocserv.conf"
+      dest: "/etc/ocserv/ocserv.conf"
       owner: "root"
       group: "root"
       mode: "0644"
@@ -134,7 +143,7 @@
   - name: Template ocpwd file
     ansible.builtin.template:
       src: "{{ playbook_dir  }}/templates/ocpasswd"
-      dst: "/etc/ocserv/ocpasswd "
+      dest: "/etc/ocserv/ocpasswd "
       owner: "root"
       group: "root"
       mode: "0600"
