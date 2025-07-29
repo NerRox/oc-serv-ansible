@@ -59,7 +59,7 @@
       reload: true
 
   - name: Auth to dyn-dns provider
-    ansible.builin.shell: >
+    ansible.builtin.shell: >
       podman run ghcr.io/noipcom/noip-duc:latest  -g all.ddnskey.com --username {{ dynDNSuser }} --password {{ dynDNSpwd }}
   
   - name: Wait for DNS 
