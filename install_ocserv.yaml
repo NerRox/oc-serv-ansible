@@ -113,7 +113,7 @@
 
   - name: Debug challenges for certificate - dry run first
     ansible.builtin.shell: >
-      /usr/bin/certbot certonly --standalone -d {{ ocservDNSName }} --debug-challenges --dry-run --non-interactive
+      /usr/bin/certbot certonly --standalone -d {{ ocservDNSName }} --debug-challenges --dry-run --non-interactive --agree-tos
     register: _challenges_res
     changed_when: "'The dry run was successful.' in _challenges_res"
 
