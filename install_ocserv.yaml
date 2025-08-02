@@ -148,25 +148,25 @@
       group: "root"
       mode: "0600"
 
-    - name: Change pidfile
-      ansible.builtin.lineinfile:
-        path: /usr/lib/systemd/system/ocserv.service
-        regexp: '^PIDFile='
-        line: PIDFile=/run/ocserv.pid
+  - name: Change pidfile
+    ansible.builtin.lineinfile:
+      path: /usr/lib/systemd/system/ocserv.service
+      regexp: '^PIDFile='
+      line: PIDFile=/run/ocserv.pid
 
-    - name: Add restart option
-      ansible.builtin.lineinfile:
-        path: /usr/lib/systemd/system/ocserv.service
-        regexp: '^Restart='
-        line: Restart=on-failure
-        insertafter: '^\[Service\]'
+  - name: Add restart option
+    ansible.builtin.lineinfile:
+      path: /usr/lib/systemd/system/ocserv.service
+      regexp: '^Restart='
+      line: Restart=on-failure
+      insertafter: '^\[Service\]'
 
-    - name: Add restart timeout
-      ansible.builtin.lineinfile:
-        path: /usr/lib/systemd/system/ocserv.service
-        regexp: '^RestartSec='
-        line: RestartSec=5s
-        insertafter: '^\[Service\]'
+  - name: Add restart timeout
+    ansible.builtin.lineinfile:
+      path: /usr/lib/systemd/system/ocserv.service
+      regexp: '^RestartSec='
+      line: RestartSec=5s
+      insertafter: '^\[Service\]'
 
   - name: Enable and activate ocserv
     ansible.builtin.systemd_service:
