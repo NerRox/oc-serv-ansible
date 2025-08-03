@@ -95,9 +95,17 @@
       zone: public
       immediate: true
 
-  - name: Open 443 port for ocserv
+  - name: Open 443 tcp port for ocserv
     ansible.posix.firewalld:
       port: 443/tcp
+      state: enabled
+      zone: public
+      permanent: true
+      immediate: true
+
+  - name: Open 443 udp port for ocserv
+    ansible.posix.firewalld:
+      port: 443/udp
       state: enabled
       zone: public
       permanent: true
